@@ -1,2 +1,2 @@
 # nucleic
-Python build system to automate aws-lambda and api-gateway serverless architecture. 
+nucleic is a tool for automating, organizing, and simplifying the build process for an aws lambda and api-gateway backend service.
