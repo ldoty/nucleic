@@ -1,0 +1,17 @@
+#!/opt/local/bin/python3.6
+
+import sys
+
+
+class Nucleic:
+    def hello(self):
+        sys.stdout.write("Hello ")
+
+    def world(self):
+        print("World!")
+
+
+nucleic = Nucleic()
+
+for arg in sys.argv[1:]:
+    getattr(nucleic, arg)()
