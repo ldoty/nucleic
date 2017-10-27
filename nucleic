@@ -5,7 +5,7 @@ import sys
 
 class Nucleic:
     def hello(self):
-        sys.stdout.write("Hello ")
+        print("Hello", end=" ")
 
     def world(self):
         print("World!")
