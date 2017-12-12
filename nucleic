@@ -93,7 +93,7 @@ class Nucleic:
             if os.path.isdir(dependency_path):
                 check_call("rm -r {}".format(dependency_path), shell=True)
 
-            check_call("cp -r {} {}".format(source_path, install_path), shell=True)
+            check_call("ln -s {} {}".format(source_path, install_path), shell=True)
 
             os.chdir(cwd)
 
