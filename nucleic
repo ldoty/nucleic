@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import sys
+import os
 from subprocess import check_call, check_output
 
 ENV = "dev"
@@ -72,6 +73,29 @@ class Nucleic:
     def build(self):
         if self.type == "lambda":
             check_call("npm install", shell=True)
+
+            if "private_dependencies" in self.config:
+                for key in self.config["private_dependencies"]:
+                    self.install_dependencies(key, self.config["private_dependencies"][key])
+
+    def install_dependencies(self, dependency, version):
+        if version == "live":
+            cwd = working_dir = os.getcwd()
+
+            while "lib" not in os.listdir(os.getcwd()):
+                os.chdir("..")
+                working_dir = os.getcwd()
+
+            dependency_path = "{}/node_modules/{}".format(cwd, dependency)
+            source_path = "{}/lib/{}".format(working_dir, dependency)
+            install_path = "{}/node_modules".format(cwd)
+
+            if os.path.isdir(dependency_path):
+                check_call("rm -r {}".format(dependency_path), shell=True)
+
+            check_call("cp -r {} {}".format(source_path, install_path), shell=True)
+
+            os.chdir(cwd)
 
     def package(self):
         if self.type == "lambda":
