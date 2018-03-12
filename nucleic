@@ -72,7 +72,12 @@ class Nucleic:
 
     def build(self):
         if self.type == "lambda":
+            self.clean()
             check_call("npm install", shell=True)
+            check_call("mkdir -p .build/files", shell=True)
+            check_call("cp -r node_modules .build/files/node_modules", shell=True)
+            check_call("tsc --outDir .build/files", shell=True)
+            check_call("find .build/files -type f -name '*.ts' -delete", shell=True)
 
             if "private_dependencies" in self.config:
                 for key in self.config["private_dependencies"]:
@@ -99,11 +104,8 @@ class Nucleic:
 
     def package(self):
         if self.type == "lambda":
-            self.clean()
-            self.build()
-
-            check_call("mkdir .build && zip -r .build/{}.zip . -x {}".format(self.lambda_name, self.exclude),
-                       shell=True)
+           self.build() 
+           check_call("cd .build/files && zip -r ../{}.zip . -x {}".format(self.lambda_name, self.exclude), shell=True)
 
     def create(self):
         if self.type == "lambda":
@@ -125,7 +127,7 @@ class Nucleic:
             check_call(
                 "aws lambda update-function-code --function-name {} --zip-file fileb://.build/{}.zip --profile {}".format(
                     self.lambda_name, self.lambda_name, self.config["application"]), shell=True)
-
+            check_call("rm -rf .build", shell=True)
 
 nucleic = Nucleic(None, None)
 
